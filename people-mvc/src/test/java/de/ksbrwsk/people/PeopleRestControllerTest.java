@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PeopleRestControllerTest {
+class PeopleRestControllerTest extends AbstractIntegrationTest {
 
     private final static String BASE = "/api/people";
 
