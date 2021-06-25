@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.ksbrwsk</groupId>
+  	<artifactId>mvc-vs-reactive</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  	<name>mvc-vs-reactive</name>
+  	<packaging>pom</packaging>
+
+    <modules>
+        <module>people-mvc</module>
+        <module>people-reactive</module>
+    </modules>
+</project>
