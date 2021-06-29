@@ -4,9 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebInputException;
 import reactor.core.publisher.Mono;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -15,7 +22,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @RequiredArgsConstructor
 @Log4j2
 public class PersonHandler {
-
+    private final Validator validator;
     private final PersonRepository personRepository;
 
     public Mono<ServerResponse> handleFindAll(ServerRequest serverRequest) {
@@ -31,14 +38,6 @@ public class PersonHandler {
         return byId.flatMap(person -> ok()
                 .body(fromValue(person)))
                 .switchIfEmpty(notFound);
-    }
-
-    public Mono<ServerResponse> handleSave(ServerRequest serverRequest) {
-        log.info("handle request {} - {}", serverRequest.method(), serverRequest.path());
-        Mono<Person> personMono = serverRequest.bodyToMono(Person.class)
-                .flatMap(this.personRepository::save);
-        return personMono.flatMap(person -> ok()
-                .body(fromValue(person)));
     }
 
     public Mono<ServerResponse> handleDeleteById(ServerRequest serverRequest) {
@@ -61,6 +60,33 @@ public class PersonHandler {
         return firstByName.flatMap(person -> ok()
                 .body(fromValue(person)))
                 .switchIfEmpty(notFound);
-
     }
+
+    public Mono<ServerResponse> handleSave(ServerRequest serverRequest) {
+        log.info("handle request {} - {}", serverRequest.method(), serverRequest.path());
+        Mono<Person> personMono = serverRequest.bodyToMono(Person.class)
+                .doOnNext(this::validate)
+                .flatMap(this.personRepository::save);
+        return personMono.flatMap(person -> ok()
+                .body(fromValue(person)));
+    }
+
+    private void validate(Person person) {
+        log.info("validating person -> {}", person);
+        Set<ConstraintViolation<Person>> errors = validator.validate(person);
+        if (!errors.isEmpty()) {
+            List<String> result = errors.stream()
+                    .map(this::formatError)
+                    .toList();
+            log.info("person {} validated - {}", person, result.toString());
+            throw new ServerWebInputException(result.toString());
+        }
+    }
+
+    private String formatError(ConstraintViolation<Person> error) {
+        String field = StringUtils.capitalize(error.getPropertyPath().toString());
+        String message = error.getMessage();
+        return String.format("%s - %s", field, message);
+    }
+
 }

@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +14,8 @@ import javax.validation.constraints.NotEmpty;
 public class Person {
     @Id
     private Long id;
-    @NotEmpty
+    @NotNull
+    @Size(min = 1, max = 30)
     private String name;
 
     public Person(String name) {

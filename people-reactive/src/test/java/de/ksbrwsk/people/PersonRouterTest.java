@@ -84,7 +84,7 @@ class PersonRouterTest {
     }
 
     @Test
-    void handleSave() {
+    void handleSaveSuccess() {
         when(this.personRepository.save(any(Person.class)))
                 .thenReturn(Mono.just(new Person(1L, "Name")));
         this.webTestClient
@@ -96,6 +96,39 @@ class PersonRouterTest {
                 .is2xxSuccessful()
                 .expectBody(Person.class)
                 .value(person -> assertEquals(person, new Person(1L, "Name")));
+    }
+
+    @Test
+    void handleSaveNameIsNull() {
+        this.webTestClient
+                .post()
+                .uri(BASE)
+                .bodyValue(new Person(null))
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    void handleSaveNameIsEmpty() {
+        this.webTestClient
+                .post()
+                .uri(BASE)
+                .bodyValue(new Person(""))
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    void handleSaveNameLengthGreater30() {
+        this.webTestClient
+                .post()
+                .uri(BASE)
+                .bodyValue(new Person("Name___greater___30___Characters"))
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
     }
 
     @Test
