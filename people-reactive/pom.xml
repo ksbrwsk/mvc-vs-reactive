@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>16</java.version>
 		<testcontainers.version>1.16.0</testcontainers.version>
-		<spring-validation.version>2.5.3</spring-validation.version>
+		<spring-validation.version>2.5.4</spring-validation.version>
 		<blockhound.version>1.0.6.RELEASE</blockhound.version>
 	</properties>
 	<dependencies>
