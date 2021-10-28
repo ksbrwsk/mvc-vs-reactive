@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>16</java.version>
-		<testcontainers.version>1.16.0</testcontainers.version>
+		<testcontainers.version>1.16.2</testcontainers.version>
 		<spring-validation.version>2.5.4</spring-validation.version>
 		<blockhound.version>1.0.6.RELEASE</blockhound.version>
 	</properties>
